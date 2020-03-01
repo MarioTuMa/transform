@@ -1,9 +1,6 @@
 import math
 
 size = 500
-
-
-
 pixels = []
 for i in range(size):
     pixels.append([])
@@ -112,10 +109,10 @@ def circle(centerx,centery,pointx,pointy):
 
         matrixMult(rotMatrix,lineMatrix)
         matrixPrint(lineMatrix)
-    matrixDraw(lineMatrix)
+    matrixDraw()
 
 
-def matrixDraw(lineMatrix):
+def matrixDraw():
     for i in range(len(lineMatrix)):
         if(i%2==0):
             line(lineMatrix[i][0],lineMatrix[i][1],lineMatrix[i+1][0],lineMatrix[i+1][1],0,0,0)
@@ -125,7 +122,12 @@ def matrixClear():
     lineMatrix=[]
 
 def ident():
-    transformMatrix = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]
+    transformMatrix[0] = [1,0,0,0]
+    transformMatrix[1] = [0,1,0,0]
+    transformMatrix[2] = [0,0,1,0]
+    transformMatrix[3] = [0,0,0,1]
+
+
 
 def rotz(deg):
     rotAngle = deg/180 * math.pi
@@ -134,7 +136,7 @@ def rotz(deg):
     [-math.sin(rotAngle),math.cos(rotAngle),0,0],
     [0,0,1,0],
     [0,0,0,1]]
-    transformMatrix = matrixMult(rotMatrix,transformMatrix)
+    matrixMult(rotMatrix,transformMatrix)
 
 def roty(deg):
     rotAngle = deg/180 * math.pi
@@ -143,7 +145,7 @@ def roty(deg):
     [0,1,0,0],
     [math.sin(rotAngle),0,math.cos(rotAngle),0],
     [0,0,0,1]]
-    transformMatrix = matrixMult(rotMatrix,transformMatrix)
+    matrixMult(rotMatrix,transformMatrix)
 
 def rotx(deg):
     rotAngle = deg/180 * math.pi
@@ -152,18 +154,18 @@ def rotx(deg):
     [0,math.cos(rotAngle),math.sin(rotAngle),0],
     [0,-math.sin(rotAngle),math.cos(rotAngle),0,0],
     [0,0,0,1]]
-    transformMatrix = matrixMult(rotMatrix,transformMatrix)
+    matrixMult(rotMatrix,transformMatrix)
 
 def translateMatrix(a,b,c):
     tMatrix = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[a,b,c,1]]
-    transformMatrix = matrixMult(tMatrix,transformMatrix)
+    matrixMult(tMatrix,transformMatrix)
 
 def dilate(x,y,z):
     dMatrix = [[x,0,0,0],[0,y,0,0],[0,0,z,0],[0,0,0,1]]
-    transformMatrix = matrixMult(dMatrix,transformMatrix)
+    matrixMult(dMatrix,transformMatrix)
 
 def applyM():
-    lineMatrix = matrixMult(transformMatrix,lineMatrix)
+    matrixMult(transformMatrix,lineMatrix)
 
 def addLine(x1,y1,z1,x2,y2,z2):
     lineMatrix.append([x1,y1,z1,1])
@@ -171,9 +173,10 @@ def addLine(x1,y1,z1,x2,y2,z2):
 
 def drawlines():
     i = 0
-    print(lineMatrix)
+    #print(lineMatrix)
     while(i<len(lineMatrix)):
-        line(lineMatrix[i][0],lineMatrix[i][1],lineMatrix[i][0],lineMatrix[i+1][1],0,0,0)
+        print(lineMatrix[i][0],lineMatrix[i][1],lineMatrix[i+1][0],lineMatrix[i+1][1],0,0,0)
+        line(lineMatrix[i][0],lineMatrix[i][1],lineMatrix[i+1][0],lineMatrix[i+1][1],0,0,0)
         i+=2
 
 def display(name):
@@ -183,7 +186,7 @@ def display(name):
     for i in range(size):
         for j in range(size):
             fout.write(str(pixels[i][j][0])+" "+str(pixels[i][j][1])+" "+str(pixels[i][j][2])+" ")
-
+            pixels[i][j]=[255,255,255]
         fout.write("\n")
     print("The image file is "+name)
     fout.close()
@@ -193,10 +196,10 @@ def readScript(filename):
     fin = open(filename,"r")
     coms = fin.read()
     coms = coms.split("\n")
-    print(coms)
+    #print(coms)
     while(len(coms)>0):
-        print(len(coms),coms[0])
-        print(lineMatrix)
+        #print(len(coms),coms[0])
+        matrixPrint(transformMatrix)
         if(coms[0]=="line"):
             coms[1]=coms[1].split(" ")
             addLine(int(coms[1][0]),int(coms[1][1]),int(coms[1][2]),int(coms[1][3]),int(coms[1][4]),int(coms[1][5]))
@@ -238,12 +241,12 @@ def readScript(filename):
 
             coms.pop(0)
             coms.pop(0)
-            print(coms)
+            #print(coms)
         else:
             coms.pop(0)
 
 lineMatrix = []
-transformMatrix = []
+transformMatrix = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]
 
 
 
