@@ -134,7 +134,7 @@ def rotz(deg):
     [-math.sin(rotAngle),math.cos(rotAngle),0,0],
     [0,0,1,0],
     [0,0,0,1]]
-    matrixMult(rotMatrix,transformMatrix)
+    transformMatrix = matrixMult(rotMatrix,transformMatrix)
 
 def roty(deg):
     rotAngle = deg/180 * math.pi
@@ -143,7 +143,7 @@ def roty(deg):
     [0,1,0,0],
     [math.sin(rotAngle),0,math.cos(rotAngle),0],
     [0,0,0,1]]
-    matrixMult(rotMatrix,transformMatrix)
+    transformMatrix = matrixMult(rotMatrix,transformMatrix)
 
 def rotx(deg):
     rotAngle = deg/180 * math.pi
@@ -152,24 +152,32 @@ def rotx(deg):
     [0,math.cos(rotAngle),math.sin(rotAngle),0],
     [0,-math.sin(rotAngle),math.cos(rotAngle),0,0],
     [0,0,0,1]]
-    matrixMult(rotMatrix,transformMatrix)
+    transformMatrix = matrixMult(rotMatrix,transformMatrix)
 
-def transformMatrix(a,b,c):
+def translateMatrix(a,b,c):
     tMatrix = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[a,b,c,1]]
-    matrixMult(tMatrix,transformMatrix)
+    transformMatrix = matrixMult(tMatrix,transformMatrix)
 
-def dilateMatrix(factor):
-    dMatrix = [[factor,0,0,0],[0,factor,0,0],[0,0,factor,0],[0,0,0,1]]
-    matrixMult(dMatrix,transformMatrix)
+def dilate(x,y,z):
+    dMatrix = [[x,0,0,0],[0,y,0,0],[0,0,z,0],[0,0,0,1]]
+    transformMatrix = matrixMult(dMatrix,transformMatrix)
 
-def apply():
-    matrixMult(transformMatrix,lineMatrix)
+def applyM():
+    lineMatrix = matrixMult(transformMatrix,lineMatrix)
 
 def addLine(x1,y1,z1,x2,y2,z2):
     lineMatrix.append([x1,y1,z1,1])
     lineMatrix.append([x2,y2,z2,1])
 
+def drawlines():
+    i = 0
+    print(lineMatrix)
+    while(i<len(lineMatrix)):
+        line(lineMatrix[i][0],lineMatrix[i][1],lineMatrix[i][0],lineMatrix[i+1][1],0,0,0)
+        i+=2
+
 def display(name):
+    drawlines()
     fout = open(name,"w")
     fout.write("P3\n"+str(size)+" "+str(size)+"\n255\n")
     for i in range(size):
@@ -187,13 +195,52 @@ def readScript(filename):
     coms = coms.split("\n")
     print(coms)
     while(len(coms)>0):
+        print(len(coms),coms[0])
+        print(lineMatrix)
         if(coms[0]=="line"):
             coms[1]=coms[1].split(" ")
             addLine(int(coms[1][0]),int(coms[1][1]),int(coms[1][2]),int(coms[1][3]),int(coms[1][4]),int(coms[1][5]))
             coms.pop(0)
             coms.pop(0)
-        if(coms[0]=="display"):
+        elif(coms[0]=="display"):
             display("pic"+str(displaycount)+".ppm")
+            displaycount+=1
+            coms.pop(0)
+        elif(coms[0]=="ident"):
+            ident()
+            coms.pop(0)
+        elif(coms[0]=="scale"):
+            coms[1]=coms[1].split(" ")
+            dilate(int(coms[1][0]),int(coms[1][1]),int(coms[1][2]))
+            coms.pop(0)
+            coms.pop(0)
+        elif(coms[0]=="move"):
+            coms[1]=coms[1].split(" ")
+            translateMatrix(int(coms[1][0]),int(coms[1][1]),int(coms[1][2]))
+            coms.pop(0)
+            coms.pop(0)
+        elif(coms[0]=="rotate"):
+            coms[1]=coms[1].split(" ")
+            if(coms[1][0]=="z"):
+                rotz(int(coms[1][1]))
+            if(coms[1][0]=="y"):
+                roty(int(coms[1][1]))
+            if(coms[1][0]=="x"):
+                rotx(int(coms[1][1]))
+            coms.pop(0)
+            coms.pop(0)
+        elif(coms[0]=="apply"):
+            applyM()
+            coms.pop(0)
+        elif(coms[0]=="save"):
+
+            display(coms[1])
+
+            coms.pop(0)
+            coms.pop(0)
+            print(coms)
+        else:
+            coms.pop(0)
 
 lineMatrix = []
 transformMatrix = []
