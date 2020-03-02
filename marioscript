@@ -1,3 +1,4 @@
+Starting cube:
 line
 0 0 0 100 0 0
 line
@@ -22,30 +23,49 @@ line
 100 100 0 100 100 100
 line
 100 0 0 100 0 100
-display
+
+Starting Octahedron
+line
+0 0 0 50 50 100
+line
+100 0 0 50 50 100
+line
+0 100 0 50 50 100
+line
+100 100 0 50 50 100
+line
+0 0 100 50 50 0
+line
+100 0 100 50 50 0
+line
+0 100 100 50 50 0
+line
+100 100 100 50 50 0
+line
+25 25 50 25 75 50
+line
+25 25 50 75 25 50
+line
+75 75 50 25 75 50
+line
+75 25 50 75 75 50
 ident
 scale
 2 2 2
 apply
-display
 ident
 move
 100 100 0
 apply
-display
 ident
 rotate
-z 20
+z 15
 rotate
-x 20
-rotate
-y 20
+y 70
+move
+150 0 0
 apply
-display
 ident
-rotate
-y 20
 apply
-display
 save
 pic.ppm
